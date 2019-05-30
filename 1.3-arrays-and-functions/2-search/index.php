@@ -1,68 +1,73 @@
 <?php
 
 
-function generate($rows, $placesPerRow, $avaliableCount) {
+function generate($rowCount, $placesCount, $avaliableCount) {
 
-    if ($rows * $placesPerRow > $avaliableCount) {
+    if ($rowCount * $placesCount > $avaliableCount) {
         return false;
     }
 
     $map = [];
 
-    for ($i = 0; $i < $rows; $i++) {
-        for ($j = 0; $j < $placesPerRow; $j++) {
+    for ($i = 0; $i < $rowCount; $i++) {
+        for ($j = 0; $j < $placesCount; $j++) {
             $map[$i][$j] = false;
         }
     }
+    $map[1][2] = true;
+    $map[1][3] = true;
+    $map[0][5] = true;
+    $map[0][2] = true;
 
     return $map;
 }
 
-function reserve(&$map, $requirePlace) {
+function reserve(&$map, $requirePlace, $rowCount, $placesCount) {
 
     $ending = 0;
-    $result = null;
+    $reservation = [];
+    for ($i = 0; $i < $rowCount; $i++) {
+        $ending = 0;
+        for ($j = 0; $j < $placesCount - $requirePlace + 1; $j++) {
 
-    for ($i = 0; $i < $rows; $i++) {
+        	if ($ending  < $requirePlace) {
+                if ($map[$i][$j] === false) {
+                    $map[$i][$j] = true;
+                    $ending++;
+                }
+            }
 
-        for ($j = 0; $j < $placesPerRow - $requirePlace + 1; $j++) {
-
-        	if ($result == null) {
-        		$ending = 0;
-	        	for ($k = 0; $k < $placesPerRow; $k++) {
-	        		if ($map[$i+k][$j+k] === false) {
-		        		$ending++;
-       					echo "i = $i , j = $j<br>".PHP_EOL;
-		        	}
-		        }
-
-		    	if ($ending == $requirePlace) {
-		    		$result = $map[$i][$j];
-		    	}
+            if ($ending  === $requirePlace) {
+                $reservation[0] = $i+1;
+                $reservation[1] = $j+1;
+                break 2;
 		    }
 		}
 
     }
 
-	return $result
+
+    return $reservation;
 }
 
 //проверка
 
 $chairs = 50;
-$map = generate(5, 8, $chairs);
-$requirePlace = 5;
+$rowCount = 5;
+$placesCount = 8;
+$map = generate($rowCount, $placesCount, $chairs);
+$requirePlace = 3;
 
-$reverve = reserve($map, $requireRow, $requirePlace);
-logReserve($map, $requirePlace);
+$reverve = reserve($map, $requirePlace, $rowCount, $placesCount);
+logReserve($reverve, $requirePlace);
 
-$reverve = reserve($map, $requireRow, $requirePlace);
-logReserve($map, $requirePlace);
+$reverve = reserve($map, $requirePlace, $rowCount, $placesCount);
+logReserve($reverve, $requirePlace);
 
 
-function logReserve($result){
-    if ($result !== null) {
-        echo "Ваши места забронированы! $result<br>".PHP_EOL;
+function logReserve(&$reservation, $requirePlace){
+    if ($ending  = $requirePlace) {
+        echo "Ваши места забронированы! $requirePlace свободных мест найдено в $reservation[0] ряду, начиная с $reservation[1] места <br>".PHP_EOL;
     } else {
         echo "Что-то пошло не так=( Бронь не удалась".PHP_EOL;
     }
