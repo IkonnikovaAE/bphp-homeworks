@@ -20,8 +20,8 @@ function generate($rows, $placesPerRow, $avaliableCount) {
 
 function reserve(&$map, $row, $place) {
 
-    if ($map[$row+1][$place+1] === false) {
-        $map[$row+1][$place+1] = true;
+    if ($map[$row][$place] === false) {
+        $map[$row][$place] = true;
         return true;
     }
 }
@@ -33,11 +33,11 @@ $map = generate(5, 8, $chairs);
 $requireRow = 3;
 $requirePlace = 5;
 
-$reverve = reserve($map, $requireRow, $requirePlace);
-logReserve($requireRow, $requirePlace, $reverve);
+$reserved = reserve($map, $requireRow, $requirePlace);
+logReserve($requireRow, $requirePlace, $reserved);
 
-$reverve = reserve($map, $requireRow, $requirePlace);
-logReserve($requireRow, $requirePlace, $reverve);
+$reserved = reserve($map, $requireRow, $requirePlace);
+logReserve($requireRow, $requirePlace, $reserved);
 
 
 function logReserve($row, $place, $result){
